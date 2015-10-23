@@ -21,6 +21,13 @@
         <scala.version>2.11</scala.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/emowhiz/test.git</connection>
+        <url>scm:git:https://github.com/emowhiz/test.git</url>
+        <developerConnection>scm:git:https://github.com/emowhiz/test.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -121,52 +128,19 @@
                     <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <goals>deploy</goals>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
+                    <username>emowhiz</username>
+                    <password>damned321</password>
+                </configuration>
+            </plugin>
 
-            <!--for app assembler-->
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>appassembler-maven-plugin</artifactId>-->
-            <!--<version>1.10</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>generate-jsw-scripts</id>-->
-            <!--<phase>package</phase>-->
-            <!--<goals>-->
-            <!--<goal>generate-daemons</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<repositoryLayout>flat</repositoryLayout>-->
-            <!--&lt;!&ndash;<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>&ndash;&gt;-->
-            <!--<daemons>-->
-            <!--<daemon>-->
-            <!--<id>service1</id>-->
-            <!--<mainClass>hms.scala.petstore.Boot</mainClass>-->
-            <!--<platforms>-->
-            <!--<platform>jsw</platform>-->
-            <!--</platforms>-->
-            <!--</daemon>-->
-            <!--</daemons>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-assembly-plugin</artifactId>-->
-            <!--<version>1.10</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>package</phase>-->
-            <!--<goals>-->
-            <!--<goal>single</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--<configuration>-->
-            <!--<descriptor>src/main/assembly/bin.xml</descriptor>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
 
         </plugins>
     </build>
