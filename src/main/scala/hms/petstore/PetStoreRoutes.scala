@@ -20,6 +20,7 @@ import com.mongodb.casbah.Imports._
 import hms.petstore.json.{PetProtocol, Tag, Pet, Category}
 import hms.petstore.service.PetStoreService
 import spray.httpx.SprayJsonSupport
+import spray.httpx.marshalling.Marshaller
 import spray.routing._
 object PetStoreRoutesActor
 
@@ -42,6 +43,7 @@ trait PetStoreRoutes extends HttpService with Injectable {
     path("pet") {
       post {
         entity(as[Pet]) { p =>
+          implicitly[Marshaller[Pet]]
           complete(petOperations.create(p))
         }
       } ~

@@ -18,6 +18,7 @@ import com.novus.salat._
 import com.novus.salat.global._
 import hms.petstore.json.Pet
 import org.slf4j.{LoggerFactory, Logger}
+import spray.routing.RequestContext
 
 trait PetStoreService {
 
@@ -73,6 +74,7 @@ class ActualPetStoreService extends PetStoreService {
 
   val log: Logger = LoggerFactory.getLogger(ActualPetStoreService.getClass)
 
+
   def create(pet: Pet): Pet = {
     PetDBO.collection.insert(grater[Pet].asDBObject(pet))
     val found = PetDBO.collection.findOne("_id" $eq pet.id)
@@ -93,7 +95,7 @@ class ActualPetStoreService extends PetStoreService {
 
   def findById(id: Int): Pet = {
     val found = PetDBO.collection.findOne("_id" $eq id)
-    log.info("Pet Found {}",id)
+    log.info("Search Pet {}",id)
     found.map(o => grater[Pet].asObject(o)).get
   }
 
