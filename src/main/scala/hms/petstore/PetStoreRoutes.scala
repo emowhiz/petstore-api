@@ -19,9 +19,11 @@ import com.escalatesoft.subcut.inject.{Injectable, BindingModule}
 import com.mongodb.casbah.Imports._
 import hms.petstore.json.{PetProtocol, Tag, Pet, Category}
 import hms.petstore.service.PetStoreService
+import spray.http.HttpHeaders
 import spray.httpx.SprayJsonSupport
 import spray.httpx.marshalling.Marshaller
 import spray.routing._
+
 object PetStoreRoutesActor
 
 class PetStoreRoutesActor(implicit val bindingModule: BindingModule) extends Actor with PetStoreRoutes with ActorLogging {
@@ -37,38 +39,51 @@ trait PetStoreRoutes extends HttpService with Injectable {
 
   val petOperations = inject[PetStoreService]
 
+  val AccessControlAllowAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Origin", "*"
+  )
+  val AccessControlAllowHeadersAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Cache-Control, Pragma,X-Custom-Header"
+  )
+  val AccessControlAllowMethodsAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE,OPTIONS"
+  )
+
+
   val petRoute = {
     import PetProtocol._
     import SprayJsonSupport._
-    path("pet") {
-      post {
-        entity(as[Pet]) { p =>
-          implicitly[Marshaller[Pet]]
-          complete(petOperations.create(p))
-        }
-      } ~
-        put {
+    respondWithHeaders(AccessControlAllowAll,AccessControlAllowHeadersAll,AccessControlAllowMethodsAll) {
+      path("pet") {
+        post {
           entity(as[Pet]) { p =>
-            complete(petOperations.put(p))
+            implicitly[Marshaller[Pet]]
+            complete(petOperations.create(p))
           }
-        }
-    } ~
-    path("pet" / "findByStatus" / Segment) { status =>
-      get {
-        complete(petOperations.findByStatus(status))
-      }
-    } ~
-    path("pet" / "findByTag" / Segment) { tag =>
-      get {
-        complete(petOperations.findByTag(tag))
-      }
-    } ~
-    path("pet" / IntNumber) { id =>
-      delete {
-        complete(petOperations.delete(id))
+        } ~
+          put {
+            entity(as[Pet]) { p =>
+              complete(petOperations.put(p))
+            }
+          }
       } ~
-        get {
-          complete(petOperations.findById(id))
+        path("pet" / "findByStatus" / Segment) { status =>
+          get {
+            complete(petOperations.findByStatus(status))
+          }
+        } ~
+        path("pet" / "findByTag" / Segment) { tag =>
+          get {
+            complete(petOperations.findByTag(tag))
+          }
+        } ~
+        path("pet" / IntNumber) { id =>
+          delete {
+            complete(petOperations.delete(id))
+          } ~
+            get {
+              complete(petOperations.findById(id))
+            }
         }
     }
   }

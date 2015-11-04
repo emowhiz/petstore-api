@@ -18,21 +18,24 @@ class PetServiceSpec extends SpecificationWithJUnit {
   val petStoreService = new ActualPetStoreService
   val pet = Pet(12, "dog", List(Tag(Some(1), Some("xxx"))), Some("available"), List("xxx"), Some(Category(Some(1), Some("category"))))
   val petCopy = pet.copy(name = "bad dog")
+  sequential
 
-  override def is = sequential^s2"""
-  pet store service
+  "pet store service" should {
+    "create a pet and return that pet" in {
+      petStoreService.create(pet) == pet
+    }
+    "modify a pet" in {
+      petStoreService.put(petCopy) == petCopy
+    }
+    "find a pet by id and returns specific pet" in {
+      petStoreService.findById(petCopy.id) == petCopy
+    }
+    "find pets by status and returns a list" in {
+      petStoreService.findByStatus("available").head == petCopy
+    }
+    "find pets by tag and returns a list" in {
+      petStoreService.findByTag("xxx").head == petCopy
+    }
+  }
 
-  create a pet and return that pet              $e1
-  modify a pet                                  $e2
-  find a pet by id and returns specific pet     $e3
-  find pets by status and returns a list"       $e4
-  find pets by tag and returns a list           $e5
-
-  """
-
-  def e1= petStoreService.create(pet) == pet
-  def e2=petStoreService.put(petCopy) == petCopy
-  def e3=petStoreService.findById(petCopy.id) == petCopy
-  def e4=petStoreService.findByStatus("available").head == petCopy
-  def e5=petStoreService.findByTag("xxx").head == petCopy
 }
