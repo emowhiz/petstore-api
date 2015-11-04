@@ -22,6 +22,7 @@ class PetServiceSpec extends SpecificationWithJUnit {
 
   "pet store service" should {
     "create a pet and return that pet" in {
+      petStoreService.create(pet.copy(id=13,name="new dog"))
       petStoreService.create(pet) == pet
     }
     "modify a pet" in {

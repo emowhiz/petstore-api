@@ -53,11 +53,10 @@ trait PetStoreRoutes extends HttpService with Injectable {
   val petRoute = {
     import PetProtocol._
     import SprayJsonSupport._
-    respondWithHeaders(AccessControlAllowAll,AccessControlAllowHeadersAll,AccessControlAllowMethodsAll) {
+    respondWithHeaders(AccessControlAllowAll, AccessControlAllowHeadersAll, AccessControlAllowMethodsAll) {
       path("pet") {
         post {
           entity(as[Pet]) { p =>
-            implicitly[Marshaller[Pet]]
             complete(petOperations.create(p))
           }
         } ~
@@ -65,6 +64,9 @@ trait PetStoreRoutes extends HttpService with Injectable {
             entity(as[Pet]) { p =>
               complete(petOperations.put(p))
             }
+          } ~
+          options {
+            complete("ok")
           }
       } ~
         path("pet" / "findByStatus" / Segment) { status =>
@@ -83,6 +85,9 @@ trait PetStoreRoutes extends HttpService with Injectable {
           } ~
             get {
               complete(petOperations.findById(id))
+            } ~
+            options {
+              complete("ok")
             }
         }
     }
